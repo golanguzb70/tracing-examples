@@ -1,0 +1,551 @@
+basePath: /v1
+definitions:
+  models.DefaultResponse:
+    properties:
+      error_code:
+        type: integer
+      error_message:
+        type: string
+    type: object
+  models.MediaResponse:
+    properties:
+      body:
+        $ref: '#/definitions/models.UploadPhotoRes'
+      error_code:
+        type: integer
+      error_message:
+        type: string
+    type: object
+  models.OtpCheckResponse:
+    properties:
+      body:
+        properties:
+          is_right:
+            type: boolean
+        type: object
+      error_code:
+        type: integer
+      error_message:
+        type: string
+    type: object
+  models.ProductApiFindResponse:
+    properties:
+      body:
+        $ref: '#/definitions/models.ProductFindResponse'
+      error_code:
+        type: integer
+      error_message:
+        type: string
+    type: object
+  models.ProductApiResponse:
+    properties:
+      body:
+        $ref: '#/definitions/models.ProductResponse'
+      error_code:
+        type: integer
+      error_message:
+        type: string
+    type: object
+  models.ProductCreateReq:
+    properties:
+      product_name:
+        type: string
+    type: object
+  models.ProductFindResponse:
+    properties:
+      count:
+        type: integer
+      products:
+        items:
+          $ref: '#/definitions/models.ProductResponse'
+        type: array
+    type: object
+  models.ProductResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      product_name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.ProductUpdateReq:
+    properties:
+      id:
+        type: integer
+      product_name:
+        type: string
+    type: object
+  models.UploadPhotoRes:
+    properties:
+      photo_url:
+        type: string
+    type: object
+  models.UserApiResponse:
+    properties:
+      body:
+        $ref: '#/definitions/models.UserResponse'
+      error_code:
+        type: integer
+      error_message:
+        type: string
+    type: object
+  models.UserApiUpdateReq:
+    properties:
+      user_name:
+        type: string
+    type: object
+  models.UserForgotPasswordVerifyReq:
+    properties:
+      new_password:
+        type: string
+      otp:
+        type: string
+      user_name_or_email:
+        type: string
+    type: object
+  models.UserLoginRequest:
+    properties:
+      password:
+        type: string
+      user_name_or_email:
+        type: string
+    type: object
+  models.UserRegisterReq:
+    properties:
+      email:
+        type: string
+      otp:
+        type: string
+      password:
+        type: string
+      user_name:
+        type: string
+    type: object
+  models.UserResponse:
+    properties:
+      access_token:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      password:
+        type: string
+      refresh_token:
+        type: string
+      updated_at:
+        type: string
+      user_name:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Here QA can test and frontend or mobile developers can get information
+    of API endpoints.
+  title: Monolithic project API Endpoints
+  version: "1.0"
+paths:
+  /media/photo:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Through this api frontent can upload photo and get the link to
+        the media.
+      parameters:
+      - description: File
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.MediaResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+      security:
+      - BearerAuth: []
+      summary: Upload media
+      tags:
+      - Media
+  /product:
+    post:
+      consumes:
+      - application/json
+      description: Here product can be created.
+      parameters:
+      - description: post info
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProductCreateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ProductApiResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+      security:
+      - BearerAuth: []
+      summary: Create product
+      tags:
+      - Product
+    put:
+      consumes:
+      - application/json
+      description: Here product can be updated.
+      parameters:
+      - description: post info
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProductUpdateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ProductApiResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+      security:
+      - BearerAuth: []
+      summary: Update product
+      tags:
+      - Product
+  /product/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Here product can be deleted.
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete product
+      tags:
+      - Product
+    get:
+      consumes:
+      - application/json
+      description: Here product can be got.
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ProductApiResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+      summary: Get product by key
+      tags:
+      - Product
+  /product/list:
+    get:
+      consumes:
+      - application/json
+      description: Here all products can be got.
+      parameters:
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: order_by_created_at
+        type: integer
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ProductApiFindResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+      summary: Get products list
+      tags:
+      - Product
+  /user:
+    delete:
+      consumes:
+      - application/json
+      description: Here user can be deleted, user_id is taken from token.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete user
+      tags:
+      - User
+    post:
+      consumes:
+      - application/json
+      description: Here user can be registered.
+      parameters:
+      - description: post info
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserRegisterReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserApiResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+      summary: Register user
+      tags:
+      - User Authorzation
+    put:
+      consumes:
+      - application/json
+      description: Here user can be updated.
+      parameters:
+      - description: post info
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserApiUpdateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserApiResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+      security:
+      - BearerAuth: []
+      summary: Update user
+      tags:
+      - User
+  /user/check/{email}:
+    get:
+      consumes:
+      - application/json
+      description: Here user status is checked. If user is exists in database it should
+        be logged in else registered
+      parameters:
+      - description: email
+        in: path
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserApiResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+      summary: Check User status
+      tags:
+      - User Authorzation
+  /user/forgot-password/{user_name_or_email}:
+    get:
+      consumes:
+      - application/json
+      description: Through this api user forgot  password can be enabled.
+      parameters:
+      - description: user_name_or_email
+        in: path
+        name: user_name_or_email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+      summary: User forgot password
+      tags:
+      - User Authorzation
+  /user/forgot-password/verify:
+    post:
+      consumes:
+      - application/json
+      description: Through this api user forgot  password can be enabled.
+      parameters:
+      - description: User Login
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserForgotPasswordVerifyReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+      summary: User forgot password
+      tags:
+      - User Authorzation
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Through this api user is logged in
+      parameters:
+      - description: User Login
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserApiResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+      summary: User Login
+      tags:
+      - User Authorzation
+  /user/otp:
+    get:
+      consumes:
+      - application/json
+      description: Here otp can be checked if true.
+      parameters:
+      - description: email
+        in: query
+        name: email
+        required: true
+        type: string
+      - description: otp
+        in: query
+        name: otp
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.OtpCheckResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+      summary: Check Otp
+      tags:
+      - User Authorzation
+  /user/profile:
+    get:
+      consumes:
+      - application/json
+      description: Here user profile info can be got by id.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserApiResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DefaultResponse'
+      security:
+      - BearerAuth: []
+      summary: Get user by key
+      tags:
+      - User
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
